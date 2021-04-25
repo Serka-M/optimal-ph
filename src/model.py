@@ -1,6 +1,9 @@
 from sklearn import tree
 import numpy as np
 import pickle
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.linear_model import SGDClassifier
+
 
 
 class BaselineModel:
@@ -15,7 +18,7 @@ class BaselineModel:
         X = self.vectorize_sequences(df_train['sequence'].to_numpy())
         y = df_train['mean_growth_PH'].to_numpy()
 
-        model = tree.DecisionTreeRegressor()
+        model = SGDClassifier()
         model.fit(X, y)
 
         with open(self.model_file_path, 'wb') as model_file:
@@ -23,8 +26,8 @@ class BaselineModel:
 
     def predict(self, df_test):
         with open(self.model_file_path, 'rb') as model_file:
-            model: tree.DecisionTreeRegressor = pickle.load(model_file)
+            model: SGDClassifier() = pickle.load(model_file)
+        #tfidfvectorizer = pickle.load(open('src/tfidf.pickle','rb'))    
+        #tfidf = tfidfvectorizer.fit_transform(df_test)  
 
-        X = df_test['sequence'].to_numpy()
-        X_vectorized = self.vectorize_sequences(X)
-        return model.predict(X_vectorized)
+        return model.predict(df_test)
